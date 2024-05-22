@@ -9,6 +9,7 @@ namespace LibraryWin
     /// </summary>
     public partial class App : Application
     {
+
     }
 
 }

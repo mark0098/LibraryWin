@@ -1,12 +1,34 @@
-﻿<Window x:Class="LibraryWin.MainWindow"
+﻿<!-- MainWindow.xaml -->
+<Window x:Class="LibraryWin.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:LibraryWin"
-        mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800">
+        Title="Library" Height="450" Width="800">
     <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
 
+        <StackPanel Orientation="Horizontal" Margin="10">
+            <TextBlock Text="Книги" FontWeight="Bold" FontSize="16" Margin="0,0,10,0"/>
+            <Button Content="Профиль" Margin="0,0,10,0"/>
+        </StackPanel>
+
+        <StackPanel Orientation="Horizontal" Grid.Row="1" VerticalAlignment="Top" Margin="10">
+            <ComboBox x:Name="GenreFilter" Width="200" Margin="0,0,10,0"/>
+            <Button Content="Фильтр" Click="OnFilterClick"/>
+        </StackPanel>
+
+        <DataGrid x:Name="BooksDataGrid" Grid.Row="1" AutoGenerateColumns="False" Margin="10,50,10,10">
+            <DataGrid.Columns>
+                <DataGridTextColumn Header="Название книги" Binding="{Binding Название}" />
+                <DataGridTextColumn Header="Жанр" Binding="{Binding ЖанроваяГруппа}" />
+                <DataGridTextColumn Header="Автор" Binding="{Binding Автор}" />
+                <DataGridTextColumn Header="Возрастной рейтинг" Binding="{Binding ВозрастнойРейтинг}" />
+                <DataGridTextColumn Header="ISBN" Binding="{Binding Isbn}" />
+                <DataGridTextColumn Header="Комната" Binding="{Binding НомерЗала}" />
+                <DataGridTextColumn Header="Стеллаж" Binding="{Binding НомерСтеллажа}" />
+            </DataGrid.Columns>
+        </DataGrid>
     </Grid>
 </Window>
