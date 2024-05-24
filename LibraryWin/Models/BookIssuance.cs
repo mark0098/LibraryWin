@@ -19,11 +19,9 @@ public partial class BookIssuance
 
     public DateTime DateOfPlannedReturn { get; set; }
 
-    public string BookName { get; set; }
+    public int BookId { get; set; }
 
-    public string BookIssueIsbn { get; set; }
-
-    public int BookIssueCode { get; set; }
+    public virtual Book Book { get; set; }
 
     public virtual Librarian Librarian { get; set; }
 

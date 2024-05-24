@@ -17,5 +17,9 @@ public partial class Reader
 
     public decimal? Fine { get; set; }
 
+    public string Email { get; set; }
+
+    public string Password { get; set; }
+
     public virtual ICollection<BookIssuance> BookIssuances { get; set; } = new List<BookIssuance>();
 }
