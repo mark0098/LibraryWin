@@ -51,7 +51,7 @@ public partial class LibraryDBContext : DbContext
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
 #warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see http://go.microsoft.com/fwlink/?LinkId=723263.
-        => optionsBuilder.UseSqlServer("Data Source=Mark\\SQLEXPRESS;Initial Catalog=LibraryDB;Integrated Security=True;Encrypt=True; Trust Server Certificate=True");
+        => optionsBuilder.UseSqlServer("Data Source=Mark\\SQLEXPRESS;Initial Catalog=LibraryDB;Integrated Security=True;Encrypt=True; trusted_connection=true; Trust Server Certificate=True");
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -68,7 +68,7 @@ public partial class LibraryDBContext : DbContext
                 .HasColumnName("ISBN");
             entity.Property(e => e.Автор)
                 .IsRequired()
-                .HasMaxLength(152)
+                .HasMaxLength(150)
                 .IsUnicode(false);
             entity.Property(e => e.ГрупповаяПринадлежностьАвтора)
                 .HasMaxLength(50)
@@ -216,7 +216,15 @@ public partial class LibraryDBContext : DbContext
             entity.Property(e => e.BookIssuanceId)
                 .ValueGeneratedNever()
                 .HasColumnName("BookIssuanceID");
-            entity.Property(e => e.BookId).HasColumnName("BookID");
+            entity.Property(e => e.BookIssueIsbn)
+                .IsRequired()
+                .HasMaxLength(30)
+                .IsUnicode(false)
+                .HasColumnName("BookIssueISBN");
+            entity.Property(e => e.BookName)
+                .IsRequired()
+                .HasMaxLength(50)
+                .IsUnicode(false);
             entity.Property(e => e.DateOfIssue)
                 .HasColumnType("date")
                 .HasColumnName("dateOfIssue");
@@ -228,11 +236,6 @@ public partial class LibraryDBContext : DbContext
                 .HasColumnName("dateOfReturn");
             entity.Property(e => e.LibrarianId).HasColumnName("LibrarianID");
             entity.Property(e => e.ReaderId).HasColumnName("ReaderID");
-
-            entity.HasOne(d => d.Book).WithMany(p => p.BookIssuances)
-                .HasForeignKey(d => d.BookId)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK_BookIssuance_Book");
 
             entity.HasOne(d => d.Librarian).WithMany(p => p.BookIssuances)
                 .HasForeignKey(d => d.LibrarianId)
@@ -360,10 +363,6 @@ public partial class LibraryDBContext : DbContext
                 .HasColumnType("date")
                 .HasColumnName("dateOfBirth");
             entity.Property(e => e.DepartmentOfIssuanceId).HasColumnName("DepartmentOfIssuanceID");
-            entity.Property(e => e.Email)
-                .HasMaxLength(100)
-                .IsUnicode(false)
-                .HasColumnName("email");
             entity.Property(e => e.FirstName)
                 .IsRequired()
                 .HasMaxLength(50)
@@ -373,10 +372,6 @@ public partial class LibraryDBContext : DbContext
                 .HasMaxLength(50)
                 .IsUnicode(false)
                 .HasColumnName("lastName");
-            entity.Property(e => e.Password)
-                .HasMaxLength(100)
-                .IsUnicode(false)
-                .HasColumnName("password");
             entity.Property(e => e.Surname)
                 .IsRequired()
                 .HasMaxLength(50)
@@ -465,10 +460,6 @@ public partial class LibraryDBContext : DbContext
             entity.Property(e => e.ReaderId)
                 .ValueGeneratedNever()
                 .HasColumnName("ReaderID");
-            entity.Property(e => e.Email)
-                .HasMaxLength(100)
-                .IsUnicode(false)
-                .HasColumnName("email");
             entity.Property(e => e.Fine)
                 .HasColumnType("money")
                 .HasColumnName("fine");
@@ -481,10 +472,6 @@ public partial class LibraryDBContext : DbContext
                 .HasMaxLength(50)
                 .IsUnicode(false)
                 .HasColumnName("lastName");
-            entity.Property(e => e.Password)
-                .HasMaxLength(100)
-                .IsUnicode(false)
-                .HasColumnName("password");
             entity.Property(e => e.SurName)
                 .IsRequired()
                 .HasMaxLength(50)

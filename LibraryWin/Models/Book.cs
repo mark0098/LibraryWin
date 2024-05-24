@@ -29,8 +29,6 @@ public partial class Book
 
     public virtual ICollection<BookGenre> BookGenres { get; set; } = new List<BookGenre>();
 
-    public virtual ICollection<BookIssuance> BookIssuances { get; set; } = new List<BookIssuance>();
-
     public virtual PublishingHouse PublishingHouse { get; set; }
 
     public virtual Rack Rack { get; set; }
