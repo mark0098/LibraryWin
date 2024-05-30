@@ -1,5 +1,4 @@
-﻿// MainWindow.xaml.cs
-using System.Linq;
+﻿using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -46,10 +45,9 @@ namespace LibraryWin
 
             if (!string.IsNullOrEmpty(SearchTextBox.Text))
             {
-
                 if (AuthorCheckBox.IsChecked == true)
                 {
-                    query = query.Where(b => b.Автор.Contains(SearchTextBox.Text));
+                    query = query.Where(b => b.Название.Contains(SearchTextBox.Text));
                 }
                 if (GenreCheckBox.IsChecked == true)
                 {
@@ -73,10 +71,11 @@ namespace LibraryWin
                 }
 
                 MessageBox.Show("Фильтр применен");
-            }
 
-            BooksDataGrid.ItemsSource = query.ToList();
+                BooksDataGrid.ItemsSource = query.ToList();
+            }
         }
+
 
         private void BooksDataGrid_SelectionChanged(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
         {
@@ -87,7 +86,6 @@ namespace LibraryWin
         {
             if (sender is TextBlock tb)
             {
-                // Убираем выделение у предыдущего блока
                 if (BooksTextBlock != null && BooksTextBlock != tb)
                 {
                     BooksTextBlock.FontWeight = FontWeights.Normal;
@@ -99,7 +97,6 @@ namespace LibraryWin
                     ProfileTextBlock.FontSize = 16;
                 }
 
-                // Выделяем текст текущего блока
                 tb.FontWeight = FontWeights.Bold;
                 tb.FontSize = 18;
             }
@@ -107,14 +104,12 @@ namespace LibraryWin
 
         private async void ProfileTextBlock_MouseDown(object sender, MouseButtonEventArgs e)
         {
-            // Retrieve the current reader's information from the database using the email
             using (var context = new LibraryDBContext())
             {
                 var reader = await context.Readers.FirstOrDefaultAsync(r => r.Email == CurrentReaderEmail);
 
                 if (reader != null)
                 {
-                    // Open the profile window
                     ProfileWindow profileWindow = new ProfileWindow(reader);
                     profileWindow.Show();
                 }

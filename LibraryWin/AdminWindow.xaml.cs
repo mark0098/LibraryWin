@@ -16,6 +16,8 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using Microsoft.EntityFrameworkCore;
 using System.Reflection.PortableExecutable;
+using ClosedXML.Excel;
+using Microsoft.Win32;
 
 namespace LibraryWin
 {
@@ -28,6 +30,45 @@ namespace LibraryWin
         {
             InitializeComponent();
             LoadData();
+        }
+
+        private void CreateReport_Click(object sender, RoutedEventArgs e)
+        {
+            var workbook = new XLWorkbook();
+            var worksheet = workbook.Worksheets.Add("Books Report");
+
+            worksheet.Cell(1, 1).Value = "ID";
+            worksheet.Cell(1, 2).Value = "Название";
+            worksheet.Cell(1, 3).Value = "ISBN";
+            worksheet.Cell(1, 4).Value = "Количество страниц";
+            worksheet.Cell(1, 5).Value = "Издательство";
+            worksheet.Cell(1, 6).Value = "Стеллаж";
+
+            for (int i = 0; i < BooksDataGrid.Items.Count; i++)
+            {
+                var book = BooksDataGrid.Items[i] as Book;        
+                if (book != null)
+                {
+                    worksheet.Cell(i + 2, 1).Value = book.BookId;
+                    worksheet.Cell(i + 2, 2).Value = book.Name;
+                    worksheet.Cell(i + 2, 3).Value = book.Isbn;
+                    worksheet.Cell(i + 2, 4).Value = book.NumberOfPages;
+                    worksheet.Cell(i + 2, 5).Value = book.PublishingHouse?.Name;
+                    worksheet.Cell(i + 2, 6).Value = book.Rack?.RackNumber;
+                }
+            }
+
+            SaveFileDialog saveFileDialog = new SaveFileDialog
+            {
+                Filter = "Excel Workbook|*.xlsx",
+                Title = "Сохранить отчёт"
+            };
+
+            if (saveFileDialog.ShowDialog() == true)
+            {
+                workbook.SaveAs(saveFileDialog.FileName);
+                MessageBox.Show("Отчёт успешно создан!", "Успех", MessageBoxButton.OK, MessageBoxImage.Information);
+            }
         }
 
         private void LoadData()
@@ -103,12 +144,11 @@ namespace LibraryWin
         }
 
 
-        private bool isNewRow = false; // флаг, указывающий, является ли текущая строка новой
-        private object oldValue = null; // значение ячейки до ее редактирования
+        private bool isNewRow = false;        
+        private object oldValue = null;      
 
         private void BooksDataGrid_BeginningEdit(object sender, DataGridBeginningEditEventArgs e)
         {
-            // запоминаем значение ячейки до ее редактирования
             oldValue = e.Row.Item;
         }
 
@@ -124,7 +164,6 @@ namespace LibraryWin
                 switch (columnName)
                 {
                     case "BookId":
-                        // если BookId изменен, то это существующая строка
                         isNewRow = false;
 
                         book.BookId = int.Parse(e.EditingElement.GetValue(TextBox.TextProperty) as string);
@@ -161,27 +200,22 @@ namespace LibraryWin
 
                 if (result == MessageBoxResult.Yes)
                 {
-                    // проверяем, является ли текущая строка новой
                     if (isNewRow)
                     {
-                        // если это новая строка, то добавляем ее в базу данных
                         using (var context = new LibraryDBContext())
                         {
                             context.Books.Add(book);
                             context.SaveChanges();
                         }
 
-                        // обновляем значение BookId в таблице
                         e.Row.Item = book;
                         BooksDataGrid.CurrentCell = new DataGridCellInfo(e.Row, BooksDataGrid.Columns[0]);
                         BooksDataGrid.BeginEdit();
 
-                        // сбрасываем флаг isNewRow
                         isNewRow = false;
                     }
                     else
                     {
-                        // если это существующая строка, то обновляем ее в базе данных
                         using (var context = new LibraryDBContext())
                         {
                             context.Entry(book).State = EntityState.Modified;
@@ -191,21 +225,18 @@ namespace LibraryWin
                 }
                 else
                 {
-                    // Если пользователь отказался от сохранения изменений, восстанавливаем предыдущее значение
                     e.Row.Item = oldValue;
                     LoadData();
                 }
             }
             else if (e.EditAction == DataGridEditAction.Cancel)
             {
-                // если редактирование ячейки отменено, то восстанавливаем ее предыдущее значение
                 e.Row.Item = oldValue;
             }
         }
 
         private void BooksDataGrid_LoadingRow(object sender, DataGridRowEventArgs e)
         {
-            // проверяем, является ли текущая строка новой
             isNewRow = (e.Row.Item == null);
         }
 
@@ -224,7 +255,7 @@ namespace LibraryWin
                         {
                             context.Books.Remove(selectedBook);
                             context.SaveChanges();
-                            LoadData(); // Перезагрузка данных после удаления
+                            LoadData();     
                             MessageBox.Show("Книга удалена");
                         }
                     }
@@ -246,8 +277,8 @@ namespace LibraryWin
                     Name = "New Book",
                     Isbn = "123-456-7890",
                     NumberOfPages = 300,
-                    PublishingHouseId = 1, // Убедитесь, что этот внешний ключ соответствует существующей записи в таблице "PublishingHouse"
-                    RackId = 1 // Убедитесь, что этот внешний ключ соответствует существующей записи в таблице "Rack"
+                    PublishingHouseId = 1,            
+                    RackId = 1            
                 };
 
                 int maxId = context.Books.Max(r => r.BookId);
@@ -260,7 +291,6 @@ namespace LibraryWin
 
             }
 
-            // Обновляем данные в DataGrid
             LoadData();
         }
 
@@ -296,7 +326,6 @@ namespace LibraryWin
                     case "Group":
                         author.Group = e.EditingElement.GetValue(TextBox.TextProperty) as string;
                         break;
-                        // Добавьте другие столбцы, которые вы хотите отслеживать
                 }
                 if (author.AuthorId <= 0 ||
                     string.IsNullOrWhiteSpace(author.FirstName) ||
@@ -335,7 +364,7 @@ namespace LibraryWin
                         {
                             context.Authors.Remove(selectedAuthor);
                             context.SaveChanges();
-                            LoadData(); // Перезагрузка данных после удаления
+                            LoadData();     
                             MessageBox.Show("Автор удален");
                         }
                     }
@@ -397,7 +426,6 @@ namespace LibraryWin
                     case "GenreType":
                         genre.GenreType = e.EditingElement.GetValue(TextBox.TextProperty) as string;
                         break;
-                        // Добавьте другие столбцы, которые вы хотите отслеживать
                 }
                 if (genre.GenreId <= 0 ||
                     string.IsNullOrWhiteSpace(genre.Name) ||
@@ -435,7 +463,7 @@ namespace LibraryWin
                         {
                             context.Genres.Remove(selectedGenre);
                             context.SaveChanges();
-                            LoadData(); // Перезагрузка данных после удаления
+                            LoadData();     
                             MessageBox.Show("Жанр удален");
                         }
                     }
@@ -509,7 +537,6 @@ namespace LibraryWin
                             reader.Fine = fine;
                         }
                         break;
-                        // Добавьте другие столбцы, которые вы хотите отслеживать
                 }
                 if(reader.ReaderId <= 0 ||
                     string.IsNullOrWhiteSpace(reader.FirstName) ||
@@ -548,7 +575,7 @@ namespace LibraryWin
                         {
                             context.Readers.Remove(selectedReader);
                             context.SaveChanges();
-                            LoadData(); // Перезагрузка данных после удаления
+                            LoadData();     
                             MessageBox.Show("Читатель удален");
                         }
                     }
@@ -622,7 +649,6 @@ namespace LibraryWin
                     case "DateOfPlannedReturn":
                         bookIssuance.DateOfPlannedReturn = DateTime.Parse(e.EditingElement.GetValue(TextBox.TextProperty) as string);
                         break;
-                        // Добавьте другие столбцы, которые вы хотите отслеживать
                 }
                 if(bookIssuance.BookIssuanceId <= 0 ||
                     bookIssuance.BookIssuanceId <= 0 ||
@@ -660,7 +686,7 @@ namespace LibraryWin
                         {
                             context.BookIssuances.Remove(selectedBookIssuance);
                             context.SaveChanges();
-                            LoadData(); // Перезагрузка данных после удаления
+                            LoadData();     
                             MessageBox.Show("Выдача книги удалена");
                         }
                     }
@@ -678,10 +704,10 @@ namespace LibraryWin
             {
                 var newBookIssuance = new BookIssuance
                 {
-                    BookId = 1, // Пример значения
-                    ReaderId = 1, // Пример значения
+                    BookId = 1,   
+                    ReaderId = 1,   
                     DateOfIssue = DateTime.Now,
-                    DateOfPlannedReturn = DateTime.Now.AddDays(14) // Пример значения
+                    DateOfPlannedReturn = DateTime.Now.AddDays(14)   
                 };
 
                 int maxId = context.BookIssuances.Max(r => r.BookIssuanceId);
@@ -732,7 +758,6 @@ namespace LibraryWin
                         case "DepartmentNum":
                             department.DepartmentNum = e.EditingElement.GetValue(TextBox.TextProperty) as string; ;
                             break;
-                            // Добавьте другие столбцы, которые вы хотите отслеживать
                     }
                     if(department.DepartmentOfOssuanceId <= 0 ||
                         string.IsNullOrWhiteSpace(department.DepartmentNum))
@@ -776,7 +801,7 @@ namespace LibraryWin
                         {
                             context.DepartmentOfIssuances.Remove(selectedDepartment);
                             context.SaveChanges();
-                            LoadData(); // Перезагрузка данных после удаления
+                            LoadData();     
                             MessageBox.Show("Отдел удален");
                         }
                     }
@@ -794,7 +819,7 @@ namespace LibraryWin
             {
                 var newDepartment = new DepartmentOfIssuance
                 {
-                    DepartmentNum = "1" // Пример значения
+                    DepartmentNum = "1"   
                 };
 
                 int maxId = context.DepartmentOfIssuances.Max(r => r.DepartmentOfOssuanceId);
@@ -875,7 +900,7 @@ namespace LibraryWin
                         {
                             context.PublishingHouses.Remove(selectedPublishingHouse);
                             context.SaveChanges();
-                            LoadData(); // Перезагрузка данных после удаления
+                            LoadData();     
                             MessageBox.Show("Издательство удалено");
                         }
                     }
@@ -895,7 +920,7 @@ namespace LibraryWin
                 {
                     Name = "New Publishing House",
                     Commercial = Encoding.ASCII.GetBytes("0"),
-                    Coverage = "Local" // Пример значения
+                    Coverage = "Local"   
                 };
 
                 int maxId = context.PublishingHouses.Max(ph => ph.PublishingHouseId);
@@ -934,7 +959,6 @@ namespace LibraryWin
                     case "RackNumber":
                         rack.RackNumber = e.EditingElement.GetValue(TextBox.TextProperty) as string;
                         break;
-                        // Добавьте другие столбцы, которые вы хотите отслеживать
                 }
                 if(rack.RackId <= 0 ||
                    string.IsNullOrWhiteSpace(rack.RackNumber)) 
@@ -973,7 +997,7 @@ namespace LibraryWin
                         {
                             context.Racks.Remove(selectedRack);
                             context.SaveChanges();
-                            LoadData(); // Перезагрузка данных после удаления
+                            LoadData();     
                             MessageBox.Show("Стеллаж удален");
                         }
                     }
@@ -991,7 +1015,7 @@ namespace LibraryWin
             {
                 var newRack = new Rack
                 {
-                    RackNumber = "1", // Пример значения
+                    RackNumber = "1",   
                 };
 
                 int maxId = context.Racks.Max(r => r.RackId);
@@ -1036,7 +1060,6 @@ namespace LibraryWin
                     case "SurName":
                         librarian.Surname = e.EditingElement.GetValue(TextBox.TextProperty) as string;
                         break;
-                        // Добавьте другие столбцы, которые вы хотите отслеживать
                 }
                 if (librarian.LibrarianId <= 0 ||
                     string.IsNullOrWhiteSpace(librarian.FirstName) ||
@@ -1069,7 +1092,7 @@ namespace LibraryWin
                         {
                             context.Librarians.Remove(selectedLibrarian);
                             context.SaveChanges();
-                            LoadData(); // Перезагрузка данных после удаления
+                            LoadData();     
                             MessageBox.Show("Библиотекарь удален");
                         }
                     }
@@ -1138,7 +1161,6 @@ namespace LibraryWin
                     case "HallNumber":
                         hallEmployee.HallId = int.Parse((e.EditingElement as TextBox)?.Text);
                         break;
-                        // Добавьте другие столбцы, которые вы хотите отслеживать
                 }
 
                 if (hallEmployee.HallEmployeeId <= 0 ||
@@ -1179,7 +1201,7 @@ namespace LibraryWin
                         {
                             context.HallEmployees.Remove(selectedHallEmployee);
                             context.SaveChanges();
-                            LoadData(); // Перезагрузка данных после удаления
+                            LoadData();     
                             MessageBox.Show("Сотрудник зала удален");
                         }
                     }
@@ -1200,7 +1222,7 @@ namespace LibraryWin
                     FirstName = "New",
                     LastName = "Employee",
                     SurName = "N/A",
-                    HallId = 1 // Пример значения
+                    HallId = 1   
                 };
 
                 int maxId = context.HallEmployees.Max(r => r.HallEmployeeId);

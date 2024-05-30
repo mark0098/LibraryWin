@@ -3,12 +3,34 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         Title="Admin Window" MinHeight="600" MinWidth="800">
     <Grid>
+        <Grid.Background>
+            <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
+                <GradientStop Color="#FFB5D5CA"/>
+                <GradientStop Color="#FFFFFCD6" Offset="1"/>
+            </LinearGradientBrush>
+        </Grid.Background>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*"/>
             <ColumnDefinition Width="Auto"/>
         </Grid.ColumnDefinitions>
+        
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        
         <TabControl>
-            <TabItem Header="Книги">
+            <TabItem>
+                <TabItem.Header>
+                    <StackPanel Orientation="Vertical" HorizontalAlignment="Center">
+                        <Image Source="/logo.jpeg" HorizontalAlignment="Center" Width="100"/>
+                        <TextBlock Text="LIBRERAИ" FontWeight="Bold" HorizontalAlignment="Center"/>
+                    </StackPanel>
+                </TabItem.Header>
+                <!-- Содержимое вкладки -->
+            </TabItem>
+            <TabItem Header="Книги" Grid.Row="1" Width="100">
                 <Grid>
                     <DataGrid x:Name="BooksDataGrid" AutoGenerateColumns="False" 
           BeginningEdit="BooksDataGrid_BeginningEdit"
@@ -38,11 +60,12 @@
                     
                     <StackPanel Orientation="Vertical" HorizontalAlignment="Right" Margin="10,0,0,0" Width="100">
                         <Button Content="Добавить" Click="AddBook_Click" Height="30" Margin="0,0,0,10"/>
+                        <Button Content="Создать отчёт" Click="CreateReport_Click" Height="30" Margin="0,0,0,10"/>
                     </StackPanel>
                 </Grid>
             </TabItem>
 
-            <TabItem Header="Авторы">
+            <TabItem Header="Авторы" Width="100">
                 <Grid>
                     <DataGrid x:Name="AuthorsDataGrid" AutoGenerateColumns="False" Margin="0,0,115,0" 
                   BeginningEdit="AuthorsDataGrid_BeginningEdit"
@@ -62,7 +85,7 @@
                 </Grid>
             </TabItem>
 
-            <TabItem Header="Жанры">
+            <TabItem Header="Жанры" Width="100">
                 <Grid>
                     <DataGrid x:Name="GenresDataGrid" AutoGenerateColumns="False" Margin="0,0,115,0" 
                   BeginningEdit="GenresDataGrid_BeginningEdit"
@@ -80,7 +103,7 @@
                 </Grid>
             </TabItem>
 
-            <TabItem Header="Читатели">
+            <TabItem Header="Читатели" Width="100">
                 <Grid>
                     <DataGrid x:Name="ReadersDataGrid" AutoGenerateColumns="False" Margin="0,0,115,0" 
                   BeginningEdit="ReadersDataGrid_BeginningEdit"
@@ -101,7 +124,7 @@
                 </Grid>
             </TabItem>
 
-            <TabItem Header="Выдачи книг">
+            <TabItem Header="Выдачи книг" Width="100">
                 <Grid>
                     <DataGrid x:Name="BookIssuancesDataGrid" AutoGenerateColumns="False" Margin="0,0,115,0" 
                   BeginningEdit="BookIssuancesDataGrid_BeginningEdit"
@@ -122,7 +145,7 @@
                 </Grid>
             </TabItem>
 
-            <TabItem Header="Отделы выдачи">
+            <TabItem Header="Отделы выдачи" Width="100">
                 <Grid>
                     <DataGrid x:Name="DepartmentsDataGrid" AutoGenerateColumns="False" Margin="0,0,115,0"
                   BeginningEdit="DepartmentsDataGrid_BeginningEdit"
@@ -138,7 +161,7 @@
                 </Grid>
             </TabItem>
 
-            <TabItem Header="Издательства">
+            <TabItem Header="Издательства" Width="100">
                 <Grid>
                     <DataGrid x:Name="PublishingHousesDataGrid" AutoGenerateColumns="False" Margin="0,0,115,0" 
                   BeginningEdit="PublishingHousesDataGrid_BeginningEdit"
@@ -157,7 +180,7 @@
                 </Grid>
             </TabItem>
 
-            <TabItem Header="Стеллажи">
+            <TabItem Header="Стеллажи" Width="100">
                 <Grid>
                     <DataGrid x:Name="RacksDataGrid" AutoGenerateColumns="False" Margin="0,0,115,0" 
                   BeginningEdit="RacksDataGrid_BeginningEdit"
@@ -175,7 +198,7 @@
                 </Grid>
             </TabItem>
 
-            <TabItem Header="Библиотекари">
+            <TabItem Header="Библиотекари" Width="100">
                 <Grid>
                     <DataGrid x:Name="LibrariansDataGrid" AutoGenerateColumns="False" Margin="0,0,115,0" 
                   BeginningEdit="LibrariansDataGrid_BeginningEdit"
@@ -195,7 +218,7 @@
                     </StackPanel>
                 </Grid>
             </TabItem>
-            <TabItem Header="Сотрудники зала">
+            <TabItem Header="Сотрудники зала" Width="100">
                 <Grid>
                     <DataGrid x:Name="HallEmployeesDataGrid" AutoGenerateColumns="False" Margin="0,0,115,0" 
                   BeginningEdit="HallEmployeesDataGrid_BeginningEdit"

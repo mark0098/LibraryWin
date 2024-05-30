@@ -1,35 +1,20 @@
-﻿using LibraryWin.Models;
-using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Linq;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
-using static System.Windows.Forms.VisualStyles.VisualStyleElement.ListView;
+using LibraryWin.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace LibraryWin
 {
-    /// <summary>
-    /// Interaction logic for Login.xaml
-    /// </summary>
     public partial class Login : Window
     {
         private LibraryDBContext _context;
+
         public Login()
         {
             InitializeComponent();
-            LibraryDBContext DBContext = new();
-            _context = DBContext;
+            _context = new LibraryDBContext();
         }
-
 
         private async void LoginButton_Click(object sender, RoutedEventArgs e)
         {
@@ -44,8 +29,9 @@ namespace LibraryWin
                 {
                     MessageBox.Show("Вы успешно вошли в систему.");
                     MainWindow mainWindow = new MainWindow();
+                    mainWindow.CurrentReaderEmail = email;      
                     mainWindow.Show();
-                    Close();
+                    Close();    
                 }
                 else
                 {
@@ -60,7 +46,7 @@ namespace LibraryWin
                     MessageBox.Show("Здравствуйте, библиотекарь.");
                     AdminWindow adminWindow = new AdminWindow();
                     adminWindow.Show();
-                    Close();
+                    Close();    
                 }
                 else
                 {
@@ -69,6 +55,30 @@ namespace LibraryWin
             }
         }
 
+
+        private void RegisterTextBlock_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
+        {
+            Register registerWindow = new Register();
+            registerWindow.RegistrationCompleted += RegisterWindow_RegistrationCompleted;
+            registerWindow.ShowDialog();
+        }
+
+        private void RegisterWindow_RegistrationCompleted(object sender, RegistrationEventArgs e)
+        {
+            UpdateContext();
+
+            Reader newReader = _context.Readers.FirstOrDefault(u => u.Email == e.Email);
+            ProfileWindow profileWindow = new ProfileWindow(newReader);
+            profileWindow.ShowDialog();
+        }
+
+
+        private void UpdateContext()
+        {
+            _context.ChangeTracker.Clear();    
+            _context.Dispose();       
+            _context = new LibraryDBContext();      
+        }
 
     }
 }

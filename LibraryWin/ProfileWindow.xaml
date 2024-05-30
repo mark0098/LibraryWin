@@ -7,6 +7,12 @@
         mc:Ignorable="d"
         Title="ProfileWindow" Height="450" Width="800">
     <Grid>
+        <Grid.Background>
+            <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
+                <GradientStop Color="#FFB5D5CA"/>
+                <GradientStop Color="#FFFFFCD6" Offset="1"/>
+            </LinearGradientBrush>
+        </Grid.Background>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
@@ -16,13 +22,11 @@
             <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
 
-        <!-- Avatar image -->
         <Image Grid.Row="0" Grid.Column="0" Grid.RowSpan="2"
            Source="source/avatar.jpeg"
            Visibility="Visible"
            Stretch="Uniform" Margin="10" MaxWidth="100" MaxHeight="100"/>
 
-        <!-- Other UI elements -->
         <StackPanel Grid.Row="0" Grid.Column="1" Grid.RowSpan="2" VerticalAlignment="Center" Margin="10">
             <TextBlock Text="Имя:" FontWeight="Bold" Margin="0,0,10,0"/>
             <TextBlock x:Name="FirstNameTextBlock" Text="{Binding FirstName}" FontSize="18"/>
