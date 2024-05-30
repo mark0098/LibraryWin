@@ -1,0 +1,245 @@
+﻿<Window x:Class="LibraryWin.AdminWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Admin Window" MinHeight="600" MinWidth="800">
+    <Grid>
+        <Grid.Background>
+            <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
+                <GradientStop Color="#FFB5D5CA"/>
+                <GradientStop Color="#FFFFFCD6" Offset="1"/>
+            </LinearGradientBrush>
+        </Grid.Background>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="Auto"/>
+        </Grid.ColumnDefinitions>
+        
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        
+        <TabControl>
+            <TabItem>
+                <TabItem.Header>
+                    <StackPanel Orientation="Vertical" HorizontalAlignment="Center">
+                        <Image Source="/logo.jpeg" HorizontalAlignment="Center" Width="100"/>
+                        <TextBlock Text="LIBRERAИ" FontWeight="Bold" HorizontalAlignment="Center"/>
+                    </StackPanel>
+                </TabItem.Header>
+                <!-- Содержимое вкладки -->
+            </TabItem>
+            <TabItem Header="Книги" Grid.Row="1" Width="100">
+                <Grid>
+                    <DataGrid x:Name="BooksDataGrid" AutoGenerateColumns="False" 
+          BeginningEdit="BooksDataGrid_BeginningEdit"
+          CellEditEnding="BooksDataGrid_CellEditEnding"
+          PreviewKeyDown="BooksDataGrid_PreviewKeyDown"
+                              Margin="0,0,115,0" >
+                        <DataGrid.Columns>
+                            <DataGridTextColumn Header="ID" Binding="{Binding BookId}"/>
+                            <DataGridTextColumn Header="Название" Binding="{Binding Name}"/>
+                            <DataGridTextColumn Header="ISBN" Binding="{Binding Isbn}"/>
+                            <DataGridTextColumn Header="Количество страниц" Binding="{Binding NumberOfPages}"/>
+                            <DataGridTextColumn Header="Издательство" Binding="{Binding PublishingHouse.Name}"/>
+                            <DataGridTextColumn Header="Стеллаж" Binding="{Binding Rack.RackNumber}"/>
+
+                            <DataGridTemplateColumn Header="Действия">
+                                <DataGridTemplateColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <StackPanel Orientation="Horizontal">
+                                            <Button Content="Редактировать" Command="{Binding DataContext.EditCommand, RelativeSource={RelativeSource AncestorType={x:Type Window}}}" CommandParameter="{Binding}" Margin="2"/>
+                                            <Button Content="Удалить" Command="{Binding DataContext.DeleteCommand, RelativeSource={RelativeSource AncestorType={x:Type Window}}}" CommandParameter="{Binding}" Margin="2"/>
+                                        </StackPanel>
+                                    </DataTemplate>
+                                </DataGridTemplateColumn.CellTemplate>
+                            </DataGridTemplateColumn>
+                        </DataGrid.Columns>
+                    </DataGrid>
+                    
+                    <StackPanel Orientation="Vertical" HorizontalAlignment="Right" Margin="10,0,0,0" Width="100">
+                        <Button Content="Добавить" Click="AddBook_Click" Height="30" Margin="0,0,0,10"/>
+                        <Button Content="Создать отчёт" Click="CreateReport_Click" Height="30" Margin="0,0,0,10"/>
+                    </StackPanel>
+                </Grid>
+            </TabItem>
+
+            <TabItem Header="Авторы" Width="100">
+                <Grid>
+                    <DataGrid x:Name="AuthorsDataGrid" AutoGenerateColumns="False" Margin="0,0,115,0" 
+                  BeginningEdit="AuthorsDataGrid_BeginningEdit"
+                  CellEditEnding="AuthorsDataGrid_CellEditEnding"
+                  PreviewKeyDown="AuthorsDataGrid_PreviewKeyDown">
+                        <DataGrid.Columns>
+                            <DataGridTextColumn Header="ID" Binding="{Binding AuthorId}"/>
+                            <DataGridTextColumn Header="Имя" Binding="{Binding FirstName}"/>
+                            <DataGridTextColumn Header="Фамилия" Binding="{Binding LastName}"/>
+                            <DataGridTextColumn Header="Отчество" Binding="{Binding SurName}"/>
+                            <DataGridTextColumn Header="Группа" Binding="{Binding Group}"/>
+                        </DataGrid.Columns>
+                    </DataGrid>
+                    <StackPanel Orientation="Vertical" HorizontalAlignment="Right" Margin="10,0,0,0" Width="100">
+                        <Button Content="Добавить" Click="AddAuthorButton_Click" Height="30" Margin="0,0,0,10"/>
+                    </StackPanel>
+                </Grid>
+            </TabItem>
+
+            <TabItem Header="Жанры" Width="100">
+                <Grid>
+                    <DataGrid x:Name="GenresDataGrid" AutoGenerateColumns="False" Margin="0,0,115,0" 
+                  BeginningEdit="GenresDataGrid_BeginningEdit"
+                  CellEditEnding="GenresDataGrid_CellEditEnding"
+                  PreviewKeyDown="GenresDataGrid_PreviewKeyDown">
+                        <DataGrid.Columns>
+                            <DataGridTextColumn Header="ID" Binding="{Binding GenreId}"/>
+                            <DataGridTextColumn Header="Название" Binding="{Binding Name}"/>
+                            <DataGridTextColumn Header="Тип" Binding="{Binding GenreType}"/>
+                        </DataGrid.Columns>
+                    </DataGrid>
+                    <StackPanel Orientation="Vertical" HorizontalAlignment="Right" Margin="10,0,0,0" Width="100">
+                        <Button Content="Добавить" Click="AddGenreButton_Click" Height="30" Margin="0,0,0,10"/>
+                    </StackPanel>
+                </Grid>
+            </TabItem>
+
+            <TabItem Header="Читатели" Width="100">
+                <Grid>
+                    <DataGrid x:Name="ReadersDataGrid" AutoGenerateColumns="False" Margin="0,0,115,0" 
+                  BeginningEdit="ReadersDataGrid_BeginningEdit"
+                  CellEditEnding="ReadersDataGrid_CellEditEnding"
+                  PreviewKeyDown="ReadersDataGrid_PreviewKeyDown">
+                        <DataGrid.Columns>
+                            <DataGridTextColumn Header="ID" Binding="{Binding ReaderId}"/>
+                            <DataGridTextColumn Header="Имя" Binding="{Binding FirstName}"/>
+                            <DataGridTextColumn Header="Фамилия" Binding="{Binding LastName}"/>
+                            <DataGridTextColumn Header="Отчество" Binding="{Binding SurName}"/>
+                            <DataGridTextColumn Header="Email" Binding="{Binding Email}"/>
+                            <DataGridTextColumn Header="Штраф" Binding="{Binding Fine}"/>
+                        </DataGrid.Columns>
+                    </DataGrid>
+                    <StackPanel Orientation="Vertical" HorizontalAlignment="Right" Margin="10,0,0,0" Width="100">
+                        <Button Content="Добавить" Click="AddReaderButton_Click" Height="30" Margin="0,0,0,10"/>
+                    </StackPanel>
+                </Grid>
+            </TabItem>
+
+            <TabItem Header="Выдачи книг" Width="100">
+                <Grid>
+                    <DataGrid x:Name="BookIssuancesDataGrid" AutoGenerateColumns="False" Margin="0,0,115,0" 
+                  BeginningEdit="BookIssuancesDataGrid_BeginningEdit"
+                  CellEditEnding="BookIssuancesDataGrid_CellEditEnding"
+                  PreviewKeyDown="BookIssuancesDataGrid_PreviewKeyDown">
+                        <DataGrid.Columns>
+                            <DataGridTextColumn Header="ID" Binding="{Binding BookIssuanceId}"/>
+                            <DataGridTextColumn Header="ID книги" Binding="{Binding BookId}"/>
+                            <DataGridTextColumn Header="ID читателя" Binding="{Binding ReaderId}"/>
+                            <DataGridTextColumn Header="Дата выдачи" Binding="{Binding DateOfIssue}"/>
+                            <DataGridTextColumn Header="Дата возврата" Binding="{Binding DateOfReturn}"/>
+                            <DataGridTextColumn Header="Планируемая дата возврата" Binding="{Binding DateOfPlannedReturn}"/>
+                        </DataGrid.Columns>
+                    </DataGrid>
+                    <StackPanel Orientation="Vertical" HorizontalAlignment="Right" Margin="10,0,0,0" Width="100">
+                        <Button Content="Добавить" Click="AddBookIssuanceButton_Click" Height="30" Margin="0,0,0,10"/>
+                    </StackPanel>
+                </Grid>
+            </TabItem>
+
+            <TabItem Header="Отделы выдачи" Width="100">
+                <Grid>
+                    <DataGrid x:Name="DepartmentsDataGrid" AutoGenerateColumns="False" Margin="0,0,115,0"
+                  BeginningEdit="DepartmentsDataGrid_BeginningEdit"
+                  CellEditEnding="DepartmentsDataGrid_CellEditEnding">
+                        <DataGrid.Columns>
+                            <DataGridTextColumn Header="ID" Binding="{Binding DepartmentOfOssuanceId}"/>
+                            <DataGridTextColumn Header="Номер отдела" Binding="{Binding DepartmentNum}"/>
+                        </DataGrid.Columns>
+                    </DataGrid>
+                    <StackPanel Orientation="Vertical" HorizontalAlignment="Right" Margin="10,0,0,0" Width="100">
+                        <Button Content="Добавить" Click="AddDepartmentButton_Click" Height="30" Margin="0,0,0,10"/>
+                    </StackPanel>
+                </Grid>
+            </TabItem>
+
+            <TabItem Header="Издательства" Width="100">
+                <Grid>
+                    <DataGrid x:Name="PublishingHousesDataGrid" AutoGenerateColumns="False" Margin="0,0,115,0" 
+                  BeginningEdit="PublishingHousesDataGrid_BeginningEdit"
+                  CellEditEnding="PublishingHousesDataGrid_CellEditEnding"
+                  PreviewKeyDown="PublishingHousesDataGrid_PreviewKeyDown">
+                        <DataGrid.Columns>
+                            <DataGridTextColumn Header="ID" Binding="{Binding PublishingHouseId}"/>
+                            <DataGridTextColumn Header="Название" Binding="{Binding Name}"/>
+                            <DataGridTextColumn Header="Коммерческое" Binding="{Binding Commercial}"/>
+                            <DataGridTextColumn Header="Покрытие" Binding="{Binding Coverage}"/>
+                        </DataGrid.Columns>
+                    </DataGrid>
+                    <StackPanel Orientation="Vertical" HorizontalAlignment="Right" Margin="10,0,0,0" Width="100">
+                        <Button Content="Добавить" Click="AddPublishingHouseButton_Click" Height="30" Margin="0,0,0,10"/>
+                    </StackPanel>
+                </Grid>
+            </TabItem>
+
+            <TabItem Header="Стеллажи" Width="100">
+                <Grid>
+                    <DataGrid x:Name="RacksDataGrid" AutoGenerateColumns="False" Margin="0,0,115,0" 
+                  BeginningEdit="RacksDataGrid_BeginningEdit"
+                  CellEditEnding="RacksDataGrid_CellEditEnding"
+                  PreviewKeyDown="RacksDataGrid_PreviewKeyDown">
+                        <DataGrid.Columns>
+                            <DataGridTextColumn Header="ID" Binding="{Binding RackId}"/>
+                            <DataGridTextColumn Header="Номер стеллажа" Binding="{Binding RackNumber}"/>
+                            <DataGridTextColumn Header="ID отдела" Binding="{Binding DepartmentOfOssuanceId}"/>
+                        </DataGrid.Columns>
+                    </DataGrid>
+                    <StackPanel Orientation="Vertical" HorizontalAlignment="Right" Margin="10,0,0,0" Width="100">
+                        <Button Content="Добавить" Click="AddRackButton_Click" Height="30" Margin="0,0,0,10"/>
+                    </StackPanel>
+                </Grid>
+            </TabItem>
+
+            <TabItem Header="Библиотекари" Width="100">
+                <Grid>
+                    <DataGrid x:Name="LibrariansDataGrid" AutoGenerateColumns="False" Margin="0,0,115,0" 
+                  BeginningEdit="LibrariansDataGrid_BeginningEdit"
+                  CellEditEnding="LibrariansDataGrid_CellEditEnding"
+                  PreviewKeyDown="LibrariansDataGrid_PreviewKeyDown">
+                        <DataGrid.Columns>
+                            <DataGridTextColumn Header="ID" Binding="{Binding LibrarianId}"/>
+                            <DataGridTextColumn Header="Имя" Binding="{Binding FirstName}"/>
+                            <DataGridTextColumn Header="Фамилия" Binding="{Binding LastName}"/>
+                            <DataGridTextColumn Header="Отчество" Binding="{Binding SurName}"/>
+                            <DataGridTextColumn Header="Email" Binding="{Binding Email}"/>
+                            <DataGridTextColumn Header="Отдел" Binding="{Binding Department.DepartmentNum}"/>
+                        </DataGrid.Columns>
+                    </DataGrid>
+                    <StackPanel Orientation="Vertical" HorizontalAlignment="Right" Margin="10,0,0,0" Width="100">
+                        <Button Content="Добавить" Click="AddLibrarianButton_Click" Height="30" Margin="0,0,0,10"/>
+                    </StackPanel>
+                </Grid>
+            </TabItem>
+            <TabItem Header="Сотрудники зала" Width="100">
+                <Grid>
+                    <DataGrid x:Name="HallEmployeesDataGrid" AutoGenerateColumns="False" Margin="0,0,115,0" 
+                  BeginningEdit="HallEmployeesDataGrid_BeginningEdit"
+                  CellEditEnding="HallEmployeesDataGrid_CellEditEnding"
+                  PreviewKeyDown="HallEmployeesDataGrid_PreviewKeyDown">
+                        <DataGrid.Columns>
+                            <DataGridTextColumn Header="ID" Binding="{Binding HallEmployeeId}"/>
+                            <DataGridTextColumn Header="Имя" Binding="{Binding FirstName}"/>
+                            <DataGridTextColumn Header="Фамилия" Binding="{Binding LastName}"/>
+                            <DataGridTextColumn Header="Отчество" Binding="{Binding SurName}"/>
+                            <DataGridTextColumn Header="Email" Binding="{Binding Email}"/>
+                            <DataGridTextColumn Header="Зал" Binding="{Binding HallNumber}"/>
+                        </DataGrid.Columns>
+                    </DataGrid>
+                    <StackPanel Orientation="Vertical" HorizontalAlignment="Right" Margin="10,0,0,0" Width="100">
+                        <Button Content="Добавить" Click="AddHallEmployeeButton_Click" Height="30" Margin="0,0,0,10"/>
+                    </StackPanel>
+                </Grid>
+            </TabItem>
+
+
+        </TabControl>
+    </Grid>
+</Window>

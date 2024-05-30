@@ -1,0 +1,65 @@
+﻿<Window x:Class="LibraryWin.Login"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:LibraryWin"
+        mc:Ignorable="d"
+        Title="Login" MinHeight="600" MinWidth="800" MaxHeight="600" MaxWidth="800" WindowStartupLocation="CenterScreen">
+
+    <Window.Resources>
+        <Style TargetType="TextBox" x:Key="TextBoxStyle">
+            <Setter Property="Height" Value="25"/>
+            <Setter Property="Padding" Value="5"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="BorderBrush" Value="Gray"/>
+        </Style>
+        <Style TargetType="PasswordBox" x:Key="PasswordBoxStyle">
+            <Setter Property="Height" Value="25"/>
+            <Setter Property="Padding" Value="5"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="BorderBrush" Value="Gray"/>
+        </Style>
+    </Window.Resources>
+
+    <Grid>
+        <StackPanel Orientation="Vertical" VerticalAlignment="Top" Margin="0,20,0,0">
+            <Image HorizontalAlignment="Center" Width="150" Source="/logo.jpeg"/>
+            <TextBlock Text="LIBRARAИ" FontWeight="Bold" HorizontalAlignment="Center" Margin="0,10,0,0"/>
+        </StackPanel>
+
+        <Grid Margin="20" VerticalAlignment="Center">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+
+            <TextBlock Text="Email:" VerticalAlignment="Center" Margin="119,0,-4,0" Height="14"/>
+            <TextBox Grid.Row="0" Margin="195,4,190,5" Name="EmailTextBox" Style="{StaticResource TextBoxStyle}"/>
+
+            <TextBlock Grid.Row="1" Text="Password:" VerticalAlignment="Center" Margin="119,0,-4,0" Height="13"/>
+            <PasswordBox Grid.Row="1" Margin="195,0,190,9" Name="PasswordBox" Style="{StaticResource PasswordBoxStyle}"/>
+
+            <Button Grid.Row="3" Margin="248,10,258,0" Content="Войти" Click="LoginButton_Click" Background="#FFB5D5CA"/>
+
+            <TextBlock Grid.Row="4" Text="Нет аккаунта?" VerticalAlignment="Center" HorizontalAlignment="Center" Margin="0,10,0,0"/>
+            <TextBlock Grid.Row="5" Text="Зарегистрируйтесь!" VerticalAlignment="Center" HorizontalAlignment="Center" Margin="0,0,0,0">
+                <TextBlock.TextDecorations>
+                    <TextDecorationCollection>
+                        <TextDecoration Location="Underline"/>
+                    </TextDecorationCollection>
+                </TextBlock.TextDecorations>
+                <TextBlock.Style>
+                    <Style TargetType="TextBlock">
+                        <Setter Property="Cursor" Value="Hand"/>
+                        <EventSetter Event="MouseLeftButtonUp" Handler="RegisterTextBlock_MouseLeftButtonUp"/>
+                    </Style>
+                </TextBlock.Style>
+            </TextBlock>
+        </Grid>
+    </Grid>
+</Window>
